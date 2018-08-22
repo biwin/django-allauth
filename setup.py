@@ -115,15 +115,13 @@ long_description = io.open('README.rst', encoding='utf-8').read()
 version = __import__('allauth').__version__
 
 METADATA = dict(
-    name='django-allauth',
+    name='django-allauth-underground',
     version=version,
-    author='Raymond Penners',
-    author_email='raymond.penners@intenct.nl',
-    description='Integrated set of Django applications addressing'
-    ' authentication, registration, account management as well as'
-    ' 3rd party (social) account authentication.',
+    author='Biwin John',
+    author_email='biwin007@gmail.com',
+    description='Some quick hacks on django-allauth to make it more useful',
     long_description=long_description,
-    url='http://github.com/pennersr/django-allauth',
+    url='http://github.com/biwin/django-allauth-underground',
     keywords='django auth account social openid twitter facebook oauth'
     ' registration',
     tests_require=test_requirements,
