@@ -36,7 +36,7 @@ class SignupView(RedirectAuthenticatedUserMixin, CloseableSignupMixin,
         self.sociallogin = None
         data = request.session.get('socialaccount_sociallogin')
         
-        emails = request.session.get('socialaccount_sociallogin').get('email_addresses')
+        emails = request.session.get('socialaccount_sociallogin', {}).get('email_addresses', [])
         for _ in emails:
             email = _['email']
             try:
