@@ -34,6 +34,22 @@ class SignupView(RedirectAuthenticatedUserMixin, CloseableSignupMixin,
     def dispatch(self, request, *args, **kwargs):
         self.sociallogin = None
         data = request.session.get('socialaccount_sociallogin')
+        
+        emails = request.session.get('socialaccount_sociallogin').get('email_addresses')
+        for _ in emails:
+            email = _['email']
+            try:
+                User = get_user_model()
+                user = User.objects.get(email=email)
+                if user:
+                    messages.add_message(
+                        request, messages.ERROR, "A user is registered with given email using another social provider"
+                    )
+                    self.template_name = 'socialaccount/signup_user_exists.html'
+
+            except User.DoesNotExist:
+                pass
+        
         if data:
             self.sociallogin = SocialLogin.deserialize(data)
         if not self.sociallogin:
