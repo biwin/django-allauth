@@ -1,10 +1,10 @@
 import requests
-
 from allauth.socialaccount.providers.oauth2.views import (
     OAuth2Adapter,
     OAuth2CallbackView,
     OAuth2LoginView,
 )
+from django.contrib.auth import get_user_model
 
 from .provider import GoogleProvider
 
@@ -22,23 +22,27 @@ class GoogleOAuth2Adapter(OAuth2Adapter):
                                     'alt': 'json'})
         resp.raise_for_status()
         extra_data = resp.json()
-        
-        # SOCIALACCOUNT_PROVIDERS scopes
-        # 'google': {
-        #     'SCOPE': [        
-        #         'https://www.googleapis.com/auth/user.birthday.read',
-        #         'https://www.googleapis.com/auth/userinfo.email',
-        #         'https://www.googleapis.com/auth/userinfo.profile'
-        #     ],
-        # }
-        
-        _extra_data = requests.get(
-            self.people_url + "?personFields=birthdays,coverPhotos,emailAddresses,names,taglines",
-            params={'access_token': token.token, 'alt': 'json'}
-        )
-        people_data = _extra_data.json()
-        extra_data['people'] = people_data
-        
+
+        _email = extra_data['email']
+        if _email:
+            try:
+                get_user_data = False
+                user_model = get_user_model()
+                obj = user_model.objects.get(email=extra_data['email'])
+                if not obj.profile_created:
+                    get_user_data = True
+            except:
+                get_user_data = True
+            finally:
+                if get_user_data:
+                    _extra_data = requests.get(
+                        self.people_url + "?personFields=birthdays,coverPhotos,emailAddresses,names,taglines",
+                        params={'access_token': token.token, 'alt': 'json'}
+                    )
+                    people_data = _extra_data.json()
+                    extra_data['people'] = people_data
+
+
         login = self.get_provider() \
             .sociallogin_from_response(request,
                                        extra_data)
