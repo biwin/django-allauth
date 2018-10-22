@@ -803,7 +803,8 @@ You can specify the scope and fields to fetch as follows:
     SOCIALACCOUNT_PROVIDERS = {
         'linkedin': {
             'SCOPE': [
-                'r_emailaddress',
+                'r_basicprofile',
+                'r_emailaddress'
             ],
             'PROFILE_FIELDS': [
                 'id',
@@ -830,6 +831,19 @@ using the same app. Attempting to do so resulted in a weird error message when
 fetching the access token::
 
     missing required parameters, includes an invalid parameter value, parameter more then once. : Unable to retrieve access token : authorization code not found
+
+If you are using tokens originating from the mobile SDK, you will need to specify
+additional headers:
+
+.. code-block:: python
+
+    SOCIALACCOUNT_PROVIDERS = {
+        'linkedin': {
+            'HEADERS': {
+                'x-li-src': 'msdk'
+            }
+        }
+    }
 
 App registration (get your key and secret here)
     https://www.linkedin.com/secure/developer?newapp=
@@ -1422,8 +1436,16 @@ App registration (get your key and secret here)
     https://developer.vimeo.com/apps
 
 Development callback URL
-    http://localhost:8000
+    http://localhost:8000/a
 
+Vimeo (OAuth 2)
+-----
+
+App registration (get your key and secret here)
+    https://developer.vimeo.com/apps
+
+Development callback URL
+    http://localhost:8000/accounts/vimeo_oauth2/login/callback/
 
 VK
 --
